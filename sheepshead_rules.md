@@ -39,31 +39,16 @@ Ace (highest) > 10 > King > 9 > 8 > 7
 ## Dealer and Direction
 The role of dealer rotates clockwise each hand. The dealer shuffles and distributes the cards clockwise, beginning with the player to their immediate left.  
 
-## Starting and Ending Restrictions
-- The dealer may never deal the first cards to themselves.  
-- The first cards must always be dealt to the player left of the dealer.  
-- The deal may never end on the blind; the final cards must be dealt to a player.  
-
-## Cluster Sizes
-Cards must be distributed in clusters of exactly 2, 3, or 4 cards. Any sequence of clusters is legal as long as every cluster is within this range. The sizes of clusters may vary between players and between rounds of dealing.  
-
 ## The Blind (Widow)
-In games that use a blind, it must consist of the correct number of cards for that game (e.g., 2 cards in the 5-player game). The blind must be placed during the deal, as a single cluster equal to its full size. The blind may not be the first cards dealt and may not be the last cards dealt.  
-
-## Seat Order
-Dealing proceeds strictly clockwise: left of dealer, then continuing seat by seat around the table. Each player is visited in turn; no player may be skipped or dealt to twice before the next player in order. After the dealer receives cards, the sequence continues again with the player to their left, until the deal is complete. Placement of the blind does not interrupt or advance the order; it simply occurs between two player actions.  
+In games that use a blind, it must consist of the correct number of cards for that game (e.g., 2 cards in the 5-player game).
 
 ## Completion Requirements
 At the end of the deal, each player must have exactly the required hand size for that number of players (e.g., 6 cards each in the 5-player game). The blind must have exactly its required size. All cards in the deck must be accounted for with no extras or shortages.  
 
 ## Definition of a Legal Deal
 A deal is legal if and only if all of the following conditions are satisfied:  
-- The first cards are dealt to the player left of the dealer.  
-- Every player cluster is exactly 2, 3, or 4 cards.  
-- The blind is dealt exactly once, in the correct size, not first, and not last.  
-- The clockwise seat order is strictly preserved, with no skips or repeats.  
 - Each player and the blind end with the correct total number of cards.  
-- The entire deck is exhausted without error.  
+- The entire deck is exhausted without error.
 
 ---
 
