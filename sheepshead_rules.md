@@ -111,7 +111,7 @@ After bidding and the bury are complete, the picker must determine whether they 
 ## A. Called-Ace Partner System
 
 ### Base Rule
-Once the picker has taken the blind and completed the bury, they must call the ace of a fail suit (♣, ♠, or ♥) that they do not hold.  
+Once the picker has taken the blind and completed the bury, they must call the ace of a fail suit (♣, ♠, or ♥) that they hold (in the general sense, there are corner cases). They cannot call a fail if they only have an Ace of that fail.
 
 The player holding that ace becomes the picker’s silent partner.  
 
