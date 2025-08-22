@@ -34,8 +34,8 @@ export interface Ruleset {
   requirePickerHasSuitToCall?: boolean;
 }
 
+// Helper function to check if a card is a fail suit card (not trump)
 function isFailSuitCard(c: Card): boolean {
-  // Fail suits: Clubs/Spades/Hearts EXCLUDING all trump (Qs, Js) and all Diamonds.
   return (c.s === "C" || c.s === "S" || c.s === "H") && !isTrump(c);
 }
 
@@ -311,24 +311,16 @@ export function applyCall(
     throw new Error("Must call a fail Ace or (if forced) a fail Ten");
   }
 
-  // Suit-holding variant (fail cards only; J/Q/D don't count)
-  if (state.rules.requirePickerHasSuitToCall) {
-    if (!holdsFailSuit(pickerHand, card.s as "C" | "S" | "H")) {
-      throw new Error("You must hold at least one fail card in the called suit");
-    }
-  }
+  // Check if card was buried first (independent check)
+  const buried = state.buried.some(b => b.r === card.r && b.s === card.s);
+  if (buried) throw new Error("Cannot call a card you buried");
 
-  // Compute "all-aces" and "all-aces + all-tens"
+  // Determine what aces/tens picker holds
   const suits = ["C","S","H"] as const;
   const hasAllFailAces = suits.every(s => holdsFailRank(pickerHand, "A", s));
   const hasAllFailTens = suits.every(s => holdsFailRank(pickerHand, "T", s));
 
-  // NEW GUARD: A Ten may be called only in the all-aces scenario
-  if (isFailTen && !hasAllFailAces) {
-    throw new Error("Cannot call a Ten unless you hold all fail Aces");
-  }
-
-  // Forced solo if all aces + all tens
+  // FORCED SOLO: if holds all aces AND all tens
   if (hasAllFailAces && hasAllFailTens) {
     state.called = { solo: true };
     state.partnerCalled = false;
@@ -339,20 +331,28 @@ export function applyCall(
     return;
   }
 
-  // If all aces but not all tens → must call a Ten (so calling an Ace is illegal)
+  // RULE 1: If holding all fail aces, MUST call a Ten (can't call an Ace)
   if (hasAllFailAces && isFailAce) {
     throw new Error("Picker holds all fail aces; must call a Ten instead");
   }
 
-  // Can't call the exact fail Ace/Ten you hold
+  // RULE 2: Suit-holding requirement (if enabled) - check this BEFORE Ten restrictions
+  if (state.rules.requirePickerHasSuitToCall) {
+    if (!holdsFailSuit(pickerHand, card.s as "C" | "S" | "H")) {
+      throw new Error("You must hold at least one fail card in the called suit");
+    }
+  }
+
+  // RULE 3: Can only call a Ten if holding all fail aces
+  if (isFailTen && !hasAllFailAces) {
+    throw new Error("Cannot call a Ten unless you hold all fail Aces");
+  }
+
+  // RULE 4: Cannot call a card you hold
   if (holdsFailRank(pickerHand, card.r as "A" | "T", card.s as "C" | "S" | "H")) {
     if (card.r === "A") throw new Error("Cannot call a fail Ace you hold");
     if (card.r === "T") throw new Error("Cannot call a fail Ten you hold");
   }
-
-  // (Optional) disallow bury-then-call (keep if you added earlier)
-  const buried = state.buried.some(b => b.r === card.r && b.s === card.s);
-  if (buried) throw new Error("Cannot call a card you buried");
 
   // Valid call → advance to Play
   state.called = { card };
