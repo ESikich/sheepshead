@@ -299,6 +299,7 @@ export function applyCall(
   const card = payload.card;
   const pickerHand = state.hands[seat];
 
+  // Must call a fail Ace or (if forced) a fail Ten
   const isFailAce = card.r === "A" && (card.s === "C" || card.s === "S" || card.s === "H");
   const isFailTen = card.r === "T" && (card.s === "C" || card.s === "S" || card.s === "H");
   if (!isFailAce && !isFailTen) {
@@ -330,15 +331,34 @@ export function applyCall(
     throw new Error("Picker holds all fail aces; must call a Ten instead");
   }
 
-  // RULE 2: Can only call a Ten if holding all fail aces
+  // RULE 2: Cannot call a card you hold
+  if (holdsFailRank(pickerHand, card.r as "A" | "T", card.s as "C" | "S" | "H")) {
+    if (card.r === "A") throw new Error("Cannot call a fail Ace you hold");
+    if (card.r === "T") throw new Error("Cannot call a fail Ten you hold");
+  }
+
+  // RULE 3: Must have a "hold card" - at least one non-Ace card in the called suit
+  // This only applies to Ace calls (Ten calls work differently)
+  if (isFailAce) {
+    const hasHoldCard = pickerHand.some(c => 
+      c.s === card.s && c.r !== "A" && !isTrump(c)
+    );
+    if (!hasHoldCard) {
+      throw new Error(`Cannot call Ace of ${card.s} - you must have at least one other ${card.s} card (hold card)`);
+    }
+  }
+
+  // RULE 4: Can only call a Ten if holding all fail aces
   if (isFailTen && !hasAllFailAces) {
     throw new Error("Cannot call a Ten unless you hold all fail Aces");
   }
 
-  // RULE 3: Cannot call a card you hold
-  if (holdsFailRank(pickerHand, card.r as "A" | "T", card.s as "C" | "S" | "H")) {
-    if (card.r === "A") throw new Error("Cannot call a fail Ace you hold");
-    if (card.r === "T") throw new Error("Cannot call a fail Ten you hold");
+  // RULE 5: For Ten calls: must hold the corresponding Ace (this is the "hold card" for Ten calls)
+  if (isFailTen) {
+    const hasCorrespondingAce = holdsFailRank(pickerHand, "A", card.s as "C" | "S" | "H");
+    if (!hasCorrespondingAce) {
+      throw new Error(`Cannot call Ten of ${card.s} - you must hold the Ace of ${card.s}`);
+    }
   }
 
   // Valid call → advance to Play
