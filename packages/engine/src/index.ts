@@ -30,17 +30,11 @@ export interface Ruleset {
   players: 5;
   blindSize: 2;
   buryCount: 2;
-  /** Variant: picker must hold at least one fail-suit card of the called suit */
-  requirePickerHasSuitToCall?: boolean;
 }
 
 // Helper function to check if a card is a fail suit card (not trump)
 function isFailSuitCard(c: Card): boolean {
   return (c.s === "C" || c.s === "S" || c.s === "H") && !isTrump(c);
-}
-
-function holdsFailSuit(hand: Card[], s: "C" | "S" | "H"): boolean {
-  return hand.some(c => c.s === s && isFailSuitCard(c));
 }
 
 function holdsFailRank(hand: Card[], r: "A" | "T", s: "C" | "S" | "H"): boolean {
@@ -336,19 +330,12 @@ export function applyCall(
     throw new Error("Picker holds all fail aces; must call a Ten instead");
   }
 
-  // RULE 2: Suit-holding requirement (if enabled) - check this BEFORE Ten restrictions
-  if (state.rules.requirePickerHasSuitToCall) {
-    if (!holdsFailSuit(pickerHand, card.s as "C" | "S" | "H")) {
-      throw new Error("You must hold at least one fail card in the called suit");
-    }
-  }
-
-  // RULE 3: Can only call a Ten if holding all fail aces
+  // RULE 2: Can only call a Ten if holding all fail aces
   if (isFailTen && !hasAllFailAces) {
     throw new Error("Cannot call a Ten unless you hold all fail Aces");
   }
 
-  // RULE 4: Cannot call a card you hold
+  // RULE 3: Cannot call a card you hold
   if (holdsFailRank(pickerHand, card.r as "A" | "T", card.s as "C" | "S" | "H")) {
     if (card.r === "A") throw new Error("Cannot call a fail Ace you hold");
     if (card.r === "T") throw new Error("Cannot call a fail Ten you hold");

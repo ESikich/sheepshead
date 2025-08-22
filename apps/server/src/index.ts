@@ -75,8 +75,7 @@ wss.on("connection", (ws) => {
         state = newHand(dealer, seed, {
           players: 5,
           blindSize: 2,
-          buryCount: 2,
-          requirePickerHasSuitToCall: true,  // <-- your house rule
+          buryCount: 2
         });
 
         // Send each client their own POV

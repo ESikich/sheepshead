@@ -15,7 +15,6 @@ type StatePOV = {
   bidTurn: Seat | null
   buried?: Card[]
   called?: any
-  rules?: { requirePickerHasSuitToCall?: boolean }
 }
 
 export default function App() {
@@ -53,24 +52,20 @@ export default function App() {
     if (c.s === 'D') return true
     return false
   }
-  function holdsFailSuitUI(hand: Card[], s: 'C'|'S'|'H'): boolean {
-    // must hold at least one *fail* card of that suit (J/Q/D don't count)
-    return hand.some(c => c.s === s && !isTrump(c))
+
+  function holdsFailRank(hand: Card[], r: 'A'|'T', s: 'C'|'S'|'H'): boolean {
+    return hand.some(c => c.r === r && c.s === s && !isTrump(c))
   }
-  const holds = (r: 'A'|'T', s: 'C'|'S'|'H') =>
-    myHand.some(c => c.r === r && c.s === s && !isTrump(c))
 
-  const holdsAllFailAces = (['C','S','H'] as const).every(s => holds('A', s))
-  const holdsAllFailTens = (['C','S','H'] as const).every(s => holds('T', s))
+  const holdsAllFailAces = (['C','S','H'] as const).every(s => holdsFailRank(myHand, 'A', s))
+  const holdsAllFailTens = (['C','S','H'] as const).every(s => holdsFailRank(myHand, 'T', s))
 
-  const requireHasSuit = !!state?.rules?.requirePickerHasSuitToCall
-  const canCallAceSuit = (s: 'C'|'S'|'H') =>
-    (!holds('A', s)) && (!requireHasSuit || holdsFailSuitUI(myHand, s))
-  const canCallTenSuit = (s: 'C'|'S'|'H') =>
-    (!holds('T', s)) && (!requireHasSuit || holdsFailSuitUI(myHand, s))
+  // Legal calls based on standard Sheepshead rules
+  const canCallAceSuit = (s: 'C'|'S'|'H') => !holdsFailRank(myHand, 'A', s)
+  const canCallTenSuit = (s: 'C'|'S'|'H') => !holdsFailRank(myHand, 'T', s)
 
-  const aceButtons = (['C','S','H'] as const).filter(canCallAceSuit)
-  const tenButtons = (['C','S','H'] as const).filter(canCallTenSuit)
+  const aceButtons = holdsAllFailAces ? [] : (['C','S','H'] as const).filter(canCallAceSuit)
+  const tenButtons = holdsAllFailAces ? (['C','S','H'] as const).filter(canCallTenSuit) : []
 
   const toggleBury = (idx: number) => {
     if (!state || state.phase !== 'Bury' || !iAmPicker) return
@@ -136,8 +131,7 @@ export default function App() {
             <div style={{ padding: 12, border: '1px solid #eee', borderRadius: 8, marginBottom: 12 }}>
               <h3>Call Partner</h3>
               <p>
-                Call a fail Ace you do not hold{requireHasSuit ? ' and you must hold that suit' : ''}.
-                If you hold all fail aces, you must call a fail Ten you do not hold{requireHasSuit ? ' and you hold that suit' : ''}.
+                Call a fail Ace you do not hold. If you hold all fail aces, you must call a fail Ten you do not hold.
                 If you hold all aces and tens, you are forced Solo.
               </p>
               <div style={{ display:'flex', gap: 8, flexWrap:'wrap' }}>
@@ -145,7 +139,7 @@ export default function App() {
 
                 {holdsAllFailAces ? (
                   tenButtons.length === 0 ? (
-                    <span style={{ marginLeft: 8 }}>Forced Solo (you hold all aces & tens or lack suit)</span>
+                    <span style={{ marginLeft: 8 }}>Forced Solo (you hold all aces & tens)</span>
                   ) : (
                     tenButtons.map(s => (
                       <button key={`T-${s}`} onClick={() => callTen(s)} style={{ marginLeft:8 }}>
@@ -155,7 +149,7 @@ export default function App() {
                   )
                 ) : (
                   aceButtons.length === 0 ? (
-                    <span style={{ marginLeft: 8 }}>No legal ace to call (you hold it or lack suit)</span>
+                    <span style={{ marginLeft: 8 }}>No legal ace to call (you hold all aces)</span>
                   ) : (
                     aceButtons.map(s => (
                       <button key={`A-${s}`} onClick={() => callAce(s)} style={{ marginLeft:8 }}>
