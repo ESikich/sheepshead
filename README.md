@@ -1,46 +1,91 @@
-# Sheepshead Monorepo (MVP)
+# Sheepshead Engine & Web App
 
-This is a minimal, **runnable** scaffold:
-- `@sheepshead/engine` — pure deterministic engine (deal, card utils)
-- `@sheepshead/server` — Fastify + WebSocket, single in-memory table
-- `@sheepshead/web` — Vite + React client to connect and view hands
+This repository contains a **monorepo** implementation of the card game *Sheepshead*, including:
+- **Engine** — pure TypeScript game logic, rules, and tests
+- **Server** — WebSocket + HTTP backend for multiplayer
+- **Web** — React + Vite frontend client
 
-> Goal: get you from zero to "I can deal a hand and see POV-redacted hands" quickly.
-> Next: add bidding, blind/bury/call, trick play, scoring, bots, and persistence.
+---
 
-## Prereqs
-- Node **20+**
-- pnpm: `npm i -g pnpm`
+## Getting Started
 
-## Install
+### Prerequisites
+- [Node.js 20+](https://nodejs.org/)
+- [pnpm](https://pnpm.io/) (package manager)
+
+Install pnpm globally if you haven’t yet:
+```bash
+npm install -g pnpm
+```
+
+### Install dependencies
+At the repo root:
 ```bash
 pnpm install
 ```
 
-## Dev (run all)
-In one terminal:
-```bash
-pnpm --filter @sheepshead/engine dev
-```
-In another:
+### Run the server
 ```bash
 pnpm --filter @sheepshead/server dev
 ```
-In another:
+Server runs at:
+- WebSocket: `ws://localhost:4000/ws`
+- HTTP: `http://localhost:4000`
+
+### Run the web client
 ```bash
 pnpm --filter @sheepshead/web dev
 ```
+Web client runs at [http://localhost:5173](http://localhost:5173).
 
-Open the web app at http://localhost:5173 and click **Start Hand**.
+---
 
-> Tip: Open the page in multiple tabs to simulate multiple seats; each tab gets assigned a seat automatically and sees redacted hands for others.
+## Testing
 
-## Notes
-- The engine currently covers deck, seeded deal, trump ordering, trick winner util, and legal-follow heuristics.
-- Server keeps a single hand in memory (MVP). It exposes `/ws` for a WebSocket that accepts `StartHand` and `RequestState`.
-- Web shows your hand and redacted others. It's frameworked for future actions.
-- To expand, follow the architecture plan we discussed:
-  - Add `applyAction` and `legalActions` to the engine.
-  - Implement bidding and trick play state machine.
-  - Broadcast and persist events (Postgres) from the server.
-  - Reuse the engine in the client for optimistic legality checks.
+The **engine** is fully unit tested with [Vitest](https://vitest.dev/).
+
+```bash
+pnpm --filter @sheepshead/engine test
+```
+
+Test files live alongside source (`*.test.ts`) and cover:
+- Bidding & picking
+- Called-Ace partner system
+- Corner cases (forced Ten, forced Solo, buried card rules)
+
+---
+
+## Repository Structure
+
+```
+apps/
+  server/   # WebSocket/HTTP API
+  web/      # React frontend
+packages/
+  engine/   # Game logic, rules, state machine
+```
+
+---
+
+## Development Notes
+
+- TypeScript strict mode is enabled.
+- pnpm workspaces manage shared dependencies.
+- `.gitignore` excludes build artifacts, logs, IDE files, coverage.
+
+---
+
+## Roadmap
+
+- ✅ Base engine + rules (including Called-Ace partner system)
+- ✅ Multiplayer via WebSocket server
+- ✅ Basic React frontend
+- 🔲 Scoring system
+- 🔲 AI opponents
+- 🔲 Mobile build (React Native / Expo)
+
+---
+
+## License
+
+MIT License © 2025
