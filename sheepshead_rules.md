@@ -106,53 +106,94 @@ Different tables use different rules when no one picks. These should be agreed u
 
 # Partnerships
 
-After bidding and the bury are complete, the picker must determine whether they will play with a partner or alone. Partnerships in Sheepshead are established in one of two main ways: by calling a card (most commonly an ace) or by assigning a fixed partner card (the Jack of Diamonds).  
+## 1. Partnership Determination
+1. After **bidding** and the **bury** are complete, the picker must decide whether to:  
+   - **Play with a partner**, by calling a specific card.  
+   - **Play solo**, against all other players.  
 
-## A. Called-Ace Partner System
+2. Partnerships may be formed in two ways:  
+   - **Called-Ace Partner System** (default, unless using fixed Jack-of-Diamonds partner rules).  
+   - **Special cases**, such as forced Tens or solo play.  
 
-### Base Rule
-Once the picker has taken the blind and completed the bury, they must call the ace of a fail suit (♣, ♠, or ♥) that they hold (in the general sense, there are corner cases). They cannot call a fail if they only have an Ace of that fail.
+---
 
-The player holding that ace becomes the picker’s silent partner.  
+## 2. Called-Ace Partner System
 
-The partner’s identity is revealed only when the called card is first played in a trick.  
+### 2.1 Base Rule
+1. The picker must call the **Ace of a fail suit** (♣, ♥, or ♠).  
+2. The **partner** is the player who holds the called Ace.  
+3. The partner’s identity is revealed when the Ace is first played.  
 
-### Timing
-The picker makes their call after the bury, before the first card is led.  
+---
 
-Because the picker knows their full hand at this point, they cannot accidentally call an ace they possess (including one they picked up in the blind).  
+### 2.2 Constraints
+1. The picker may not call a fail suit in which they only hold the Ace.  
+   - They must have at least one **non-Ace card** (a hold card) in the called suit.  
+2. The picker may not call an Ace they already hold.  
+3. The picker may not bury the called Ace.  
 
-### Corner Cases
-- **Picker Already Holds the Ace**  
-  Illegal to call it. The picker must choose another fail-suit ace they do not hold.  
+---
 
-- **Picker Holds All Three Fail-Suit Aces**  
-  No ace can be called. In this case, the picker must step down and call the Ten of one fail suit.  
-  - The called Ten functions exactly like a called ace: whoever holds it is the partner, revealed when played.  
+### 2.3 Timing
+1. The call is made **after the bury**, before the first lead.  
+2. Because the picker sees their full hand before calling, illegal calls (such as calling an Ace they buried) are not possible.  
 
-- **Picker Holds All Three Aces and All Three Tens**  
-  No card can be called. The picker must play solo against all opponents.  
+---
 
-- **Ace Unknown (Hidden Partner)**  
-  Sometimes the picker calls an ace, but they hold that ace themselves and have no other card in that suit, only trump.  
-  - Result: the called ace can never be led or discarded, and thus the partner is never revealed during play.  
-  - At scoring, the called ace is shown and the partner is identified.  
+## 3. Play Constraints
 
-  **Table agreement:** decide whether this counts as  
-  - a true partnership, with the partner hidden until scoring, or  
-  - a forced solo, since the partner never participated knowingly.  
+### 3.1 First Lead of the Called Suit
+1. On the first trick where the called suit is led:  
+   - The picker must play their **hold card**.  
+   - The partner must play the **called Ace**.  
+2. If the called suit is never led, the picker must play the hold card and the partner must play the Ace on the **final trick**.  
 
-### Burying the Called Ace
-Since the call comes after the bury, this cannot occur by accident.  
+---
 
-If the picker wishes to play solo, they may declare solo openly, but they cannot bury an ace and then call it.  
+### 3.2 Validity Restrictions
+1. The partner may only play the called Ace when that suit is led.  
+2. The picker must retain their hold card until the called suit is led (or until the final trick).  
 
-### Announcement Requirements
-If the picker is forced to call a Ten, they must say so explicitly (e.g., “Ten of Hearts”).  
+---
 
-This is necessary so all players understand that an unusual situation occurred — the picker held all the aces and could not make a normal call.  
+## 4. Corner Cases
 
-Otherwise, the called card is announced normally and play continues.  
+### 4.1 Picker Holds All Three Fail-Suit Aces
+1. The picker cannot call an Ace.  
+2. Instead, they must call the **Ten of a fail suit** as partner.  
+   - The picker must retain the corresponding Ace.  
+   - When the suit is led:  
+     - The picker plays the Ace.  
+     - The partner plays the Ten.  
+3. The picker must announce explicitly: *“Ten of [suit]”*.  
+
+---
+
+### 4.2 Picker Holds All Three Aces and All Three Tens
+1. No card can be called.  
+2. The picker must play **solo** against all other players.  
+
+---
+
+### 4.3 Ace Unknown (Hidden Partner)
+1. If the picker calls an Ace but holds that Ace themselves, **and** they have no other card in that suit (only trump), the called Ace can never be led.  
+2. Outcome:  
+   - The partner’s identity remains hidden during play.  
+   - At scoring, the called Ace is revealed and the partner is identified retroactively.  
+3. **Table agreement required**:  
+   - Treat this as a true partnership with a hidden partner until scoring, **or**  
+   - Treat as a forced solo (partner never participates).  
+
+---
+
+## 5. Invalid States
+- Picker calls an Ace they hold → invalid.  
+- Picker calls a fail suit where they hold only the Ace → invalid.  
+- Picker buries the called Ace → invalid.  
+- Partner plays the Ace when the suit was not led → invalid.  
+- Picker plays the hold card before required → invalid.  
+- Any unresolved state not covered by rules → reject hand and redeal.  
+
 
 ---
 
